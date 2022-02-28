@@ -2,16 +2,32 @@
 import './App.css';
 import CollectionCard from './components/CollectionCard';
 import Header from './components/Header'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Punklist from './components/Punklist';
 
 function App() {
+
+  const[punkListData, setPunkListData] = useState([])
+
+  useEffect(() => {
+    const getMyNfts = async () => {
+      const openseaData = await axios.get(
+        'https://testnets-api.opensea.io/assets?asset_contract_address=0x83F8721950867FD62322eFd3F31172a506f04484&order_direction=asc'
+      )
+
+      console.log(openseaData.data.assets)
+      setPunkListData(openseaData.data.assets)
+    }
+
+    return getMyNfts()
+  }, []); 
+
   return (
     <div className="app">
       <Header />
-      <CollectionCard 
-          id={0} 
-          name={'Reptilian Punk'} 
-          traits={[{'value': 7}]} 
-          image='https://ipfs.thirdweb.com/ipfs/QmbxpMKvCQV9rGNujnWBr1cb41QnFk18UBb1uYEfJihy5y/0.jpg'/>
+
+      <Punklist punkListData={punkListData} /> 
     </div> 
   );
 }
